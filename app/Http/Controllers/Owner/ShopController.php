@@ -8,6 +8,8 @@ use App\Models\Shop;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use InterventionImage;
+use App\Http\Requests\UploadImageRequest;
+
 
 
 class ShopController extends Controller
@@ -57,7 +59,9 @@ class ShopController extends Controller
         // dd(Shop::findOrFail($id));
     }
 
-    public function update(Request $request, $id) {
+
+    //使いたいフォームリクエストを引数に取っている。（今回は自分で作ったUploadImageRequestを使用してバリデーションを行なっている）
+    public function update(UploadImageRequest $request, $id) {
         
         //画像のアップロード処理
         $imageFile = $request->image;
