@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Owner; //Eloquent
+use App\Models\Shop; //Eloquent
 use Illuminate\Support\Facades\DB; //クエリビルダ
 use Carbon\Carbon;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
+use Illuminate\Support\Facades\Log;
 
 class OwnersController extends Controller
 {
@@ -83,11 +86,31 @@ class OwnersController extends Controller
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        Owner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        //例外処理
+        //オーナーを作成（保存）した時に、ショップを同時に一つ作る。
+        try{
+            DB::transaction(function() use($request) {
+                
+                $owner = Owner::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+
+                Shop::create([
+                    'owner_id' => $owner->id,
+                    'name' => '店名を入力してください',
+                    'information' => '',
+                    'filename' => '',
+                    'is_selling' => true
+                ]);
+
+            }, 2);
+        }catch(Throwable $e){
+            Log::error($e);
+            throw $e;
+        }
+
 
         return redirect()
         ->route('admin.owners.index')
