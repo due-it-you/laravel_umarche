@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use InterventionImage;
 use App\Http\Requests\UploadImageRequest;
+use App\Services\ImageService;
 
 
 
@@ -66,22 +67,26 @@ class ShopController extends Controller
         //画像のアップロード処理
         $imageFile = $request->image;
         if(!is_null($imageFile) && $imageFile->isValid()) {
+
+            //画像のリサイズから保存までの処理をサービスにまとめたので、それを用いる。
+            $fileNameToStore = ImageService::upload($imageFile, 'shops');
+
+
             // Storage::putFile('public/shops', $imageFile); //リザイズなしの場合
 
-            //ランダムなファイル名の作成
-            $fileName = uniqid(rand().'_');
-            //拡張子の取得
-            $extension = $imageFile->extension();
-            $fileNameToStore = $fileName. '.' . $extension;
+            // //ランダムなファイル名の作成
+            // $fileName = uniqid(rand().'_');
+            // //拡張子の取得
+            // $extension = $imageFile->extension();
+            // $fileNameToStore = $fileName. '.' . $extension;
 
-            $resizedImage = InterventionImage::make($imageFile)
-                                ->resize(1980,1080)
-                                ->encode();
+            // //取得した画像をリサイズ
+            // $resizedImage = InterventionImage::make($imageFile)
+            //                     ->resize(1980,1080)
+            //                     ->encode();
 
-
-            // dd($imageFile, $resizedImage);
-
-            Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
+            // // public/shops/　に画像を保存
+            // Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
 
         }
 
