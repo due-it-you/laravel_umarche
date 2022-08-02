@@ -1,3 +1,8 @@
+@php
+    $uriPrefix = substr(url()->current(), strlen(url('/'))+1 );
+    $uriPrefix = explode('/', $uriPrefix)[0];
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -16,12 +21,13 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @if(auth('admin')->user())
-                    @include('layouts.admin-navigation')
-                @elseif(auth('owners')->user())
-                    @include('layouts.owner-navigation')
-                @elseif(auth('users')->user())
-                    @include('layouts.user-navigation')
+            {{-- 現在URLのプレフィックスで判別 --}}
+            @if ($uriPrefix === 'admin')
+                @include('layouts.admin-navigation')
+            @elseif ($uriPrefix === 'owner')
+                @include('layouts.owner-navigation')
+            @else
+                @include('layouts.user-navigation')
             @endif
 
 
