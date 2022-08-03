@@ -42,9 +42,8 @@ class ShopController extends Controller
 
 
     public function index() {
-        //ログインしているオーナーのidを取得
-        $ownerId = Auth::id();
-        $shops = Shop::where('owner_id', $ownerId)->get();
+        //Auth::id() => ログインしているオーナーのidを取得
+        $shops = Shop::where('owner_id', Auth::id())->get();
 
         return view('owner.shops.index', compact('shops'));
     }
@@ -63,33 +62,40 @@ class ShopController extends Controller
 
     //使いたいフォームリクエストを引数に取っている。（今回は自分で作ったUploadImageRequestを使用してバリデーションを行なっている）
     public function update(UploadImageRequest $request, $id) {
+
+             //フォームで入力された値をバリデーション => OKだったら次に進める
+            $request->validate([
+                'name' => ['required', 'string', 'max:50'],
+                'information' => ['required', 'string', 'max:1000'],
+                'is_selling' => ['required'],
+            ]);
         
         //画像のアップロード処理
         $imageFile = $request->image;
         if(!is_null($imageFile) && $imageFile->isValid()) {
 
-            //画像のリサイズから保存までの処理をサービスにまとめたので、それを用いる。
+            //画像のリサイズから保存までの処理(サービスにまとめたので、それを用いる。)
             $fileNameToStore = ImageService::upload($imageFile, 'shops');
 
 
-            // Storage::putFile('public/shops', $imageFile); //リザイズなしの場合
-
-            // //ランダムなファイル名の作成
-            // $fileName = uniqid(rand().'_');
-            // //拡張子の取得
-            // $extension = $imageFile->extension();
-            // $fileNameToStore = $fileName. '.' . $extension;
-
-            // //取得した画像をリサイズ
-            // $resizedImage = InterventionImage::make($imageFile)
-            //                     ->resize(1980,1080)
-            //                     ->encode();
-
-            // // public/shops/　に画像を保存
-            // Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
-
         }
 
-        return redirect()->route('owner.shops.index');
+        $shop = Shop::findOrFail($id);
+        $shop->name = $request->name;
+        $shop->information = $request->information;
+        $shop->is_selling = $request->is_selling;
+
+        if(!is_null($imageFile) && $imageFile->isValid()){
+            $shop->filename = $fileNameToStore;
+        }
+
+        $shop->save();
+
+        return redirect()
+        ->route('owner.shops.index')
+        ->with([
+            'message'=> '店舗情報を更新しました。',
+            'status' => 'info'
+            ]);
     } 
 }
