@@ -21,14 +21,12 @@
                         Editの場合、URLが /owner/shops/edit/{shop} となっており、shopのidをURLに渡す必要があるので、
                         routeの第二引数にshopのidをパラメータとして渡す必要がある。　['shop'(キーはURLの{shop}の部分) => $shop->id (現在の$shopの中のidを取ってくる)]
                     -->
-                    <div class="w-1/4 p-4">
+                    <div class="w-1/4 p-2 md:p-4">
                         <a href="{{ route('owner.images.edit', ['image' => $image->id]) }}">
                             <div class="border rounded-md p-4">
-                                <div class="text-xl">
-                                    {{ $image->title }}
-                                </div>
                                 <x-thumbnail :filename="$image->filename" type="products" />
-                            </div>
+                                    <div class="text-gray-700">{{ $image->title }}</div>
+                                </div>
 
                         </a>
                     </div>

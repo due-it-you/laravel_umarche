@@ -1,11 +1,12 @@
 <?php 
 
+//画像ファイル名の作成、画像のリサイズの処理
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 use InterventionImage;
 
-//画像ファイル名の作成、画像のリサイズの処理
 
 class ImageService {
     public static function upload($imageFile, $folderName) {
