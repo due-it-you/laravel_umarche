@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /**************************\
   Basic Modal Styles
 \**************************/
@@ -153,5 +149,3 @@
   .micromodal-slide .modal__overlay {
     will-change: transform;
   }
-
-

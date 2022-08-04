@@ -48,8 +48,8 @@ class Owner extends Authenticatable
    }
 
    public function image() {
-        //一対一のリレーション
-        return $this->hasMany(Shop::class);
+        //一対多のリレーション
+        return $this->hasMany(Image::class);
    }
    
 }
