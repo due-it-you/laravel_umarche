@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateShopsTable extends Migration
 {
+
+    
     /**
      * Run the migrations.
      *

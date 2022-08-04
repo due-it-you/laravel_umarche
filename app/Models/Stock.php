@@ -9,6 +9,12 @@ class Stock extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'product_id',
+        'type',
+        'quantity',
+    ];
+
     //テーブル名の変更
     protected $table = 't_stocks';
 }
