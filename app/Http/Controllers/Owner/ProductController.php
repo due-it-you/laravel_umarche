@@ -37,10 +37,25 @@ class ProductController extends Controller
 
     public function index()
     {
-        //ログインしているオーナーが作っている商品を取得
-        $products = Owner::findOrFail(Auth::id())->shop->product;
+
+        //N+1問題が発生する相応しくいないコード
+        //$products = Owner::findOrFail(Auth::id())->shop->product;
         
-        return view('owner.products.index', compact('products'));
+        //Eader Loading
+        //※ with('')とすることで、N+1問題を解決
+        $ownerInfo = Owner::with('shop.product.imageFirst')
+        ->where('id', Auth::id())
+        ->get();
+
+        //取得したオーナーの情報を個々のオーナーとしてぶん回す
+        // foreach($ownerInfo as $owner) {
+        //     //取得した個々のオーナーからリレーションで商品の情報を取り出して更に回す。
+        //     foreach($owner->shop->product as $product) {
+        //         dd($product->imageFirst->filename);
+        //     }
+        // }
+        
+        return view('owner.products.index', compact('ownerInfo'));
     }
 
 
