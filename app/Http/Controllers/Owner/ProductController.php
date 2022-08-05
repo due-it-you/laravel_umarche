@@ -145,17 +145,31 @@ class ProductController extends Controller
     }
 
 
-
-    public function show($id)
-    {
-        //
-    }
-
-
-
     public function edit($id)
     {
-        //
+        //渡ってきたidに紐づく商品を取ってくる。
+        $product = Product::findOrFail($id);
+
+        //商品の在庫数を取得
+        $quantity = Stock::where('product_id', $product->id)
+                            ->sum('quantity');
+
+        $shops = Shop::where('owner_id', Auth::id())
+        ->select('id', 'name')
+        ->get();
+                    
+        $images = Image::where('owner_id', Auth::id())
+        ->select('id', 'title', 'filename')
+        ->orderBy('updated_at', 'desc')
+        ->get();
+                    
+        //N+1問題の解消 : with('')
+        $categories = PrimaryCategory::with('secondary')
+        ->get();
+
+        return view('owner.products.edit', 
+        compact('product', 'quantity', 'shops', 'images', 'categories'));
+        
     }
 
 
