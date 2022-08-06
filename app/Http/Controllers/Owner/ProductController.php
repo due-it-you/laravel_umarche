@@ -200,10 +200,12 @@ class ProductController extends Controller
                                     $product->is_selling = $request->is_selling;
                                     $product->save();
                 
-                                if($request->type === '1'){
+                                //マジックナンバー回避のため、判定の数値を定数化（場所: App\Constants )
+                                //クラス名の前にバックスラッシュをつけると、use文なしでも使える。
+                                if($request->type === \Constant::PRODUCT_LIST['add']){
                                     $newQuantity = $request->quantity;
                                 }
-                                if($request->type === '2'){
+                                if($request->type === \Constant::PRODUCT_LIST['reduce']){
                                     $newQuantity = $request->quantity * -1;
                                 }
                                 
