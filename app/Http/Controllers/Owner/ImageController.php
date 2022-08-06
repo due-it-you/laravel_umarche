@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Image;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UploadImageRequest;
 use App\Services\ImageService;
@@ -133,10 +134,46 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        //画像のデータを削除する前に、ファイル上に保存された画像を削除する必要がある。
+        //画像のデータを一つ取得
         $image = Image::findOrFail($id);
-        $filePath = 'public/products/' . $image->filename;
 
+        //商品に既に添付されている画像を取得
+        $imageInProducts = 
+        Product::where('image1', $image->id)
+        ->orWhere('image2', $image->id)
+        ->orWhere('image3', $image->id)
+        ->orWhere('image4', $image->id)
+        ->get();
+
+        //削除時、外部キー制約のエラーを回避するため、image1~4のデータをnullとする。
+        if($imageInProducts)
+        {
+            $imageInProducts->each(function($product) use($image) {
+
+                if($product->image1 === $image->id){
+                    $product->image1 = null;
+                    $product->save();
+                }
+
+                if($product->image2 === $image->id){
+                    $product->image2 = null;
+                    $product->save();
+                }
+
+                if($product->image3 === $image->id){
+                    $product->image3 = null;
+                    $product->save();
+                }
+
+                if($product->image4 === $image->id){
+                    $product->image4 = null;
+                    $product->save();
+                }
+            });
+        }
+
+        //ストレージ内に画像があれば、ファイル内の画像を先に削除
+        $filePath = 'public/products/' . $image->filename;
         if(Storage::exists($filePath)) {
             Storage::delete($filePath);
         };
