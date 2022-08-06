@@ -9,6 +9,12 @@ use App\Models\Product;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:users');
+    }
+
+
     public function index() {
         //クエリビルダでの商品情報の取得処理
 
@@ -41,5 +47,14 @@ class ItemController extends Controller
 
 
         return view('user.index', compact('products'));
+    }
+
+
+
+    //ルートパラメータのためにidが入ってくる
+    public function show($id) { 
+        $product = Product::findOrFail($id);
+
+        return view('user.show', compact('product'));
     }
 }
