@@ -130,6 +130,8 @@ return [
     'attributes'           => [
         'name' => '名前',
         'email' => 'メールアドレス',
-        'password' => 'パスワード'
+        'password' => 'パスワード',
+        'quantity' => '在庫数',
+        'is_selling' => '販売状況',
     ],
 ];
