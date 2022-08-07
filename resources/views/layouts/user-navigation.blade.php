@@ -6,10 +6,10 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <div class="w-12">
-                    <a href="{{ route('user.items.index') }}">
-                        <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
-                    </a>
-                </div>
+                        <a href="{{ route('user.items.index') }}">
+                            <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Navigation Links -->
@@ -19,7 +19,7 @@
                     </x-nav-link>
                 </div>
             </div>
-
+            <div></div>
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
@@ -40,8 +40,7 @@
                         <form method="POST" action="{{ route('user.logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('user.logout')"
-                                    onclick="event.preventDefault();
+                            <x-dropdown-link :href="route('user.logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -82,8 +81,7 @@
                 <form method="POST" action="{{ route('user.logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('user.logout')"
-                            onclick="event.preventDefault();
+                    <x-responsive-nav-link :href="route('user.logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

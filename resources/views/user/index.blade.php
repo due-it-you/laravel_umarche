@@ -15,15 +15,15 @@
                             <a href="{{ route('user.items.show', ['item' => $product->id]) }}">
                                 <div class="border rounded-md p-4">
                                     <x-thumbnail filename="{{ $product->filename ?? ''}}" type="products" />
-                                        <div class="mt-4">
-                                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">C{{ $product->category }}</h3>
-                                            <h2 class="text-gray-900 title-font text-lg font-medium">{{ $product->name }}</h2>
-                                            <p class="mt-1">{{ number_format($product->price) }} <span class="text-sm text-gray-700">円(税込)</span></p>
-                                          </div>
-                                </div>        
+                                    <div class="mt-4">
+                                        <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">C{{ $product->category }}</h3>
+                                        <h2 class="text-gray-900 title-font text-lg font-medium">{{ $product->name }}</h2>
+                                        <p class="mt-1">{{ number_format($product->price) }} <span class="text-sm text-gray-700">円(税込)</span></p>
+                                    </div>
+                                </div>
                             </a>
                         </div>
-                        @endforeach  
+                        @endforeach
                     </div>
                 </div>
             </div>

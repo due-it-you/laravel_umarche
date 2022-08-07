@@ -1,4 +1,3 @@
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -17,9 +16,9 @@
 
                     <!-- 画像の一覧表示 -->
                     <div class="flex flex-wrap">
-                    <!-- 持ってきたオーナーの情報を個々のオーナーで処理する。 -->
-                    @foreach($ownerInfo as $owner)
-                    <!-- 更に個々のオーナーの中から個々の商品のデータを持ってきて処理する。　-->
+                        <!-- 持ってきたオーナーの情報を個々のオーナーで処理する。 -->
+                        @foreach($ownerInfo as $owner)
+                        <!-- 更に個々のオーナーの中から個々の商品のデータを持ってきて処理する。　-->
                         @foreach($owner->shop->product as $product)
                         <!-- 
                             Editの場合、URLが /owner/shops/edit/{shop} となっており、shopのidをURLに渡す必要があるので、
@@ -30,16 +29,16 @@
                                 <div class="border rounded-md p-4">
                                     <!-- 三項演算子のnull判別 => もしnullだったら -->
                                     <x-thumbnail filename="{{ $product->imageFirst->filename ?? ''}}" type="products" />
-                                        {{-- <divclass="text-gray-700">$product->name }}</div>  --}}
-                                        <div class="text-gray-700">{{ $product->name }}</div>
-                                </div>        
-                            </a>
+                                    {{-- <divclass="text-gray-700">$product->name }}</div> --}}
+                                <div class="text-gray-700">{{ $product->name }}</div>
                         </div>
-                        @endforeach  
-                    @endforeach  
+                        </a>
                     </div>
+                    @endforeach
+                    @endforeach
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </x-app-layout>
