@@ -20,7 +20,7 @@ class RouteServiceProvider extends ServiceProvider
 
      //ログインしたら、どこにリダイレクトするかを決める。
      //ユーザー、オーナー、管理者それぞれのリダイレクト先を決めた。
-    public const HOME = '/dashboard';
+    public const HOME = '/';
     public const OWNER_HOME = '/owner/dashboard';
     public const ADMIN_HOME = '/admin/dashboard';
 

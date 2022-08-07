@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Product;
+use App\Models\Stock;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,7 +26,14 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             // ProductSeeder::class,
             // StockSeeder::class,
+            UserSeeder::class,
             
         ]);
+        
+        //外部キーで繋いでいるものに関しては、先に主キーのデータの方を作らないといけないので、
+        //主キーの内容を上にして、その下に外部キーのを書く必要がある。
+        Product::factory(100)->create();
+        Stock::factory(100)->create();
+
     }
 }

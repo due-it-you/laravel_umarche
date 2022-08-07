@@ -91,7 +91,7 @@
 
             <div class="mt-3 space-y-1">
                 <!-- Authentication -->
-                <form method="POST" action="{{ route('admin.logout') }}">
+                <form method="POST" action="{{route('admin.logout') }}">
                     @csrf
 
                     <x-responsive-nav-link :href="route('admin.logout')"
