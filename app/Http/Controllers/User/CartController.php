@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Stock;
 use App\Models\User;
 
 class CartController extends Controller
@@ -68,18 +69,42 @@ class CartController extends Controller
         $lineItems =[];
 
         foreach($products as $product){
-            //カートに入っている個々の商品情報 (キーはstripe APIであらかじめ用意されたものに基づく。)
-            $lineItem = [
 
-                'name' => $product->name,
-                'description' => $product->information,
-                'amount' => $product->price,
-                'currency' => 'jpy',
-                'quantity' => $product->pivot->quantity,
+            //
+            $quantity = '';
+            $quantity = Stock::where('product_id', $product->id)->sum('quantity');
 
-            ];
-            array_push($lineItems, $lineItem);
+            //カート内の商品数と商品在庫数を見比べて、買えるかどうかの判定処理
+            //カート内の商品数 > 商品在庫数　だったら買えないという処理(出なければ普通に購入できる。)
+            if($product->pivot->quantity > $quantity){
+                return redirect()->route('user.cart.index');
+            } else {
+                
+                //カートに入っている個々の商品情報 (キーはstripe APIであらかじめ用意されたものに基づく。)
+                $lineItem = [
+    
+                    'name' => $product->name,
+                    'description' => $product->information,
+                    'amount' => $product->price,
+                    'currency' => 'jpy',
+                    'quantity' => $product->pivot->quantity,
+    
+                ];
+                array_push($lineItems, $lineItem);
+            }
+            
         }
+
+        //問題ない場合、決済処理の前に購入分だけ在庫を減らしておく。
+        foreach($products as $product){
+            Stock::create([
+                    'product_id' => $product->id,
+                    'type' => \Constant::PRODUCT_LIST['reduce'],
+                    'quantity' => $product->pivot->quantity * -1,
+            ]);
+        }
+
+        dd('test');
 
         //stripeを呼び出し(秘密鍵)
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
