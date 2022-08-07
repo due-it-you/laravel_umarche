@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB; //クエリビルダ
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Stock;
 
 class ItemController extends Controller
 {
@@ -54,7 +55,15 @@ class ItemController extends Controller
     //ルートパラメータのためにidが入ってくる
     public function show($id) { 
         $product = Product::findOrFail($id);
+                //商品の在庫数を取得
+                $quantity = Stock::where('product_id', $product->id)
+                ->sum('quantity');
+            
+            //在庫数が9より大きいときは9で固定する。
+            if($quantity > 9){
+                $quantity = 9;
+            }
 
-        return view('user.show', compact('product'));
+        return view('user.show', compact('product', 'quantity'));
     }
 }
