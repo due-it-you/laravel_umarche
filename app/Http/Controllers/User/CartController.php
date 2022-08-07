@@ -6,9 +6,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\User;
 
 class CartController extends Controller
 {
+    public function index() 
+    {
+        //ユーザー情報
+        $user = User::findOrFail(Auth::id());
+        //商品情報
+        $products = $user->products;
+        $totalPrice = 0;
+
+        foreach($products as $product){
+            $totalPrice += $product->price * $product->pivot->quantity;
+        }
+
+        return view('user.cart', compact('products', 'totalPrice'));
+    }
+
     public function add(Request $request) 
     {
         $itemInCart = Cart::where('product_id', $request->product_id)
@@ -28,6 +44,6 @@ class CartController extends Controller
             ]);
         }
 
-        dd('テスト');
+        return redirect()->route('user.cart.index');
     }
 }

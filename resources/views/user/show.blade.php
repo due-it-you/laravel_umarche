@@ -17,6 +17,7 @@
                                 <div class="swiper-wrapper">
                                     <!-- Slides -->
                                     <div class="swiper-slide">
+                                        <!-- 画像の表示 -->
                                         @if($product->imageFirst->filename !== null)
                                         <img src="{{ asset('storage/products/' . $product->imageFirst->filename ) }}">
                                         @else
