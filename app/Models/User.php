@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Product;
 
 class User extends Authenticatable
 {
@@ -41,4 +42,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //Cartを中間テーブルとしたUserとProductの多対多のリレーション
+    public function products() 
+    {
+        //多対多（第二引数に中間テーブルの指定)
+        return $this->belongsToMany(Product::class, 'carts')
+        //中間テーブル
+        ->withPivot(['id', 'quantity']);
+    }
 }
