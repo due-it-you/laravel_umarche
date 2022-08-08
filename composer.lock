@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46affa30cdae1ba75f4257a69af28111",
+    "content-hash": "f315269db2d8be739151e0b4d3696947",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3093,16 +3093,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v9.0.0",
+            "version": "v7.87.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "e405c178c2167f568e654296ad6b20eb461761b5"
+                "reference": "9392f03cb8d8803bf8273378ce42d5cbbf1e24fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/e405c178c2167f568e654296ad6b20eb461761b5",
-                "reference": "e405c178c2167f568e654296ad6b20eb461761b5",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/9392f03cb8d8803bf8273378ce42d5cbbf1e24fc",
+                "reference": "9392f03cb8d8803bf8273378ce42d5cbbf1e24fc",
                 "shasum": ""
             },
             "require": {
@@ -3112,10 +3112,11 @@
                 "php": ">=5.6.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "3.5.0",
-                "phpstan/phpstan": "^1.2",
-                "phpunit/phpunit": "^5.7 || ^9.0",
-                "squizlabs/php_codesniffer": "^3.3"
+                "friendsofphp/php-cs-fixer": "2.17.1",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5.7",
+                "squizlabs/php_codesniffer": "^3.3",
+                "symfony/process": "~3.4"
             },
             "type": "library",
             "extra": {
@@ -3147,9 +3148,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v9.0.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v7.87.0"
             },
-            "time": "2022-08-02T15:47:44+00:00"
+            "time": "2021-06-30T18:22:47+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

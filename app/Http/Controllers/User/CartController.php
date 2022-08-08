@@ -61,66 +61,71 @@ class CartController extends Controller
     //Stripeに商品情報を渡す処理
     public function checkout()
     {
-        //ユーザー情報
         $user = User::findOrFail(Auth::id());
-        //ユーザーが持つ商品情報
         $products = $user->products;
-        //カートに入っている全ての商品情報
-        $lineItems =[];
-
-        foreach($products as $product){
-
-            //
+        
+        $lineItems = [];
+        foreach ($products as $product) {
             $quantity = '';
             $quantity = Stock::where('product_id', $product->id)->sum('quantity');
-
-            //カート内の商品数と商品在庫数を見比べて、買えるかどうかの判定処理
-            //カート内の商品数 > 商品在庫数　だったら買えないという処理(出なければ普通に購入できる。)
-            if($product->pivot->quantity > $quantity){
+            
+            //ここで挙動が止まっている。
+            if ($product->pivot->quantity > $quantity) {
                 return redirect()->route('user.cart.index');
             } else {
-                
-                //カートに入っている個々の商品情報 (キーはstripe APIであらかじめ用意されたものに基づく。)
                 $lineItem = [
-    
-                    'name' => $product->name,
-                    'description' => $product->information,
-                    'amount' => $product->price,
-                    'currency' => 'jpy',
-                    'quantity' => $product->pivot->quantity,
-    
+                    // 'price_data' => [
+                    //     'currency' => 'jpy',
+                    //     'unit_amount' => $product->price,
+                    //     'product_data' => [
+                    //         'name' => $product->name,
+                    //         'description' => $product->information,
+                    //     ],
+                    //     'quantity' => $product->pivot->quantity,
+                    // ],
                 ];
-                array_push($lineItems, $lineItem);
+                // array_push($lineItems, $lineItem);
             }
-            
         }
+        
+    
 
-        //問題ない場合、決済処理の前に購入分だけ在庫を減らしておく。
-        foreach($products as $product){
+
+        foreach ($products as $product) {
             Stock::create([
-                    'product_id' => $product->id,
-                    'type' => \Constant::PRODUCT_LIST['reduce'],
-                    'quantity' => $product->pivot->quantity * -1,
+                'product_id' => $product->id,
+                'type' => \Constant::PRODUCT_LIST['reduce'],
+                'quantity' => $product->pivot->quantity * -1
             ]);
         }
-
-        dd('test');
-
-        //stripeを呼び出し(秘密鍵)
+        
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
-
-        //Stripe側にセッションとして渡す
+     
         $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
-            'line_items' => [$lineItems],
+            'line_items' => [[
+                'price_data' => [
+                'currency' => 'jpy',
+                'unit_amount' => $product->price,
+                'product_data' => [
+                    'name' => $product->name,
+                    'description' => $product->information,
+                ],
+            ],
+                'quantity' => $product->pivot->quantity,
+        ]],
             'mode' => 'payment',
             'success_url' => route('user.items.index'),
             'cancel_url' => route('user.cart.index'),
         ]);
-
-        //公開鍵を渡す
+     
         $publicKey = env('STRIPE_PUBLIC_KEY');
 
-        return view('user.checkout', compact('session', 'publicKey'));
+     
+        return view(
+            'user.checkout',
+            compact('session', 'publicKey')
+        );
     }
+
 }
