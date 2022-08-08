@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB; //クエリビルダ
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\PrimaryCategory;
 use App\Models\Stock;
 
 class ItemController extends Controller
@@ -33,12 +34,21 @@ class ItemController extends Controller
 
     public function index(Request $request) {
 
+        //N+1問題の解消 : with('')
+        $categories = PrimaryCategory::with('secondary')
+        ->get();
+        
+
         //全ての商品を取得する処理（ローカルスコープでまとめている）
         $products = Product::availableItems()
+        //選んだカテゴリーのみを取ってくる処理
+        ->selectCategory($request->category ?? '0')
+        //選んだ表示順を取ってくる処理
         ->sortOrder($request->sort)
+        //選択した表示数だけ表示する処理（ページネーション）
         ->paginate($request->pagination ?? '20');
 
-        return view('user.index', compact('products'));
+        return view('user.index', compact('products', 'categories'));
     }
 
 
