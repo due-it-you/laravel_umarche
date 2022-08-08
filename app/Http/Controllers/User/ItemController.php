@@ -31,10 +31,12 @@ class ItemController extends Controller
     }
 
 
-    public function index() {
+    public function index(Request $request) {
 
         //全ての商品を取得する処理（ローカルスコープでまとめている）
-        $products = Product::availableItems()->get();
+        $products = Product::availableItems()
+        ->sortOrder($request->sort)
+        ->get();
 
         return view('user.index', compact('products'));
     }

@@ -62,6 +62,7 @@ class Product extends Model
         ->withPivot(['id','quantity']);
     }
 
+    //現在販売できる商品の取得処理
     public function scopeAvailableItems($query)
     {
         //クエリビルダでの商品情報の取得処理
@@ -85,5 +86,26 @@ class Product extends Model
         //商品ID、商品名、価格、表示順番、商品情報、小カテゴリー、第一画像のファイル名　を取得 (今回はEloquantで取得するのではなく、クエリビルダで取得するためselectを使う)
         ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order'
                     ,'products.information', 'secondary_categories.name as category', 'image1.filename as filename');
+    }
+
+
+    //表示順の切り替え・判別処理(スコープ)
+    public function scopeSortOrder($query, $sortOrder)
+    {
+        if($sortOrder === null || $sortOrder === \Constant::SORT_ORDER['recommend']){
+            return $query->orderBy('sort_order', 'asc');
+        }
+        if($sortOrder === \Constant::SORT_ORDER['higherPrice']){
+            return $query->orderBy('price', 'desc');
+        }
+        if($sortOrder === \Constant::SORT_ORDER['lowerPrice']){
+            return $query->orderBy('price', 'asc');
+        }
+        if($sortOrder === \Constant::SORT_ORDER['later']){
+            return $query->orderBy('products.created_at', 'desc');
+        }
+        if($sortOrder === \Constant::SORT_ORDER['older']){
+            return $query->orderBy('products.created_at', 'asc');
+        }
     }
 }
