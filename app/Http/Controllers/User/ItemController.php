@@ -36,7 +36,7 @@ class ItemController extends Controller
         //全ての商品を取得する処理（ローカルスコープでまとめている）
         $products = Product::availableItems()
         ->sortOrder($request->sort)
-        ->get();
+        ->paginate($request->pagination);
 
         return view('user.index', compact('products'));
     }
