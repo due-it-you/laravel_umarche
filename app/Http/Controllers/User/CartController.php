@@ -116,7 +116,7 @@ class CartController extends Controller
         ]],
             'mode' => 'payment',
             'success_url' => route('user.cart.success'),
-            'cancel_url' => route('user.cart.index'),
+            'cancel_url' => route('user.cart.cancel'),
         ]);
      
         $publicKey = env('STRIPE_PUBLIC_KEY');
@@ -138,4 +138,22 @@ class CartController extends Controller
         return redirect()->route('user.items.index');
     }
 
+    //支払いが失敗した時の処理
+    public function cancel()
+    {
+        $user = User::findOrFail(Auth::id());
+
+        //在庫をDBに戻す。
+        //この処理の前に在庫がDBから引かれているけれども、支払いに失敗した場合はその在庫をまたDBに戻してあげる必要がある。
+        foreach ($user->products as $product) {
+            Stock::create([
+                'product_id' => $product->id,
+                'type' => \Constant::PRODUCT_LIST['add'],
+                'quantity' => $product->pivot->quantity 
+            ]);
+
+            return redirect()->route('user.cart.index');
+
+        }
+    }
 }
