@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Stock;
 use App\Models\User;
+use App\Services\CartService;
 
 class CartController extends Controller
 {
@@ -61,6 +62,14 @@ class CartController extends Controller
     //Stripeに商品情報を渡す処理
     public function checkout()
     {
+        /////
+        //現在ログインしているユーザーのカート情報を取得
+        $items = Cart::where('user_id', Auth::id())->get();
+
+        //そのうち、メール送信時に必要な商品情報を取得
+        $products = CartService::getItemsInCart($items);
+        /////
+
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
         
