@@ -37,7 +37,8 @@ class ItemController extends Controller
 
     public function index(Request $request) {
 
-        SendThankMail::dispatch();
+        //非同期に送信（処理を軽くする）
+        // SendThankMail::dispatch();
 
         //N+1問題の解消 : with('')
         $categories = PrimaryCategory::with('secondary')
