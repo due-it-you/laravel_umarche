@@ -115,7 +115,7 @@ class CartController extends Controller
                 'quantity' => $product->pivot->quantity,
         ]],
             'mode' => 'payment',
-            'success_url' => route('user.items.index'),
+            'success_url' => route('user.cart.success'),
             'cancel_url' => route('user.cart.index'),
         ]);
      
@@ -126,6 +126,16 @@ class CartController extends Controller
             'user.checkout',
             compact('session', 'publicKey')
         );
+    }
+
+
+    //支払いが成功した時の処理
+    public function success()
+    {
+        //カート内の商品を消す。
+        Cart::where('user_id', Auth::id())->delete();
+
+        return redirect()->route('user.items.index');
     }
 
 }
