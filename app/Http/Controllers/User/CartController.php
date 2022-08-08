@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Stock;
 use App\Models\User;
+use App\Services\CartService;
+use App\Jobs\SendThankMail;
+use App\Jobs\SendOrderedMail;
+
+
 
 class CartController extends Controller
 {
@@ -61,6 +66,8 @@ class CartController extends Controller
     //Stripeに商品情報を渡す処理
     public function checkout()
     {
+
+
         $user = User::findOrFail(Auth::id());
         $products = $user->products;
         
@@ -132,6 +139,21 @@ class CartController extends Controller
     //支払いが成功した時の処理
     public function success()
     {
+        //現在ログインしているユーザーのカート情報を取得
+        $items = Cart::where('user_id', Auth::id())->get();
+
+        //その中からメール送信時に必要な商品情報を取得
+        $products = CartService::getItemsInCart($items);
+        $user = User::findOrFail(Auth::id());
+
+        SendThankMail::dispatch($products, $user);
+
+        foreach($products as $product)
+        {
+            SendOrderedMail::dispatch($product, $user);
+        }
+
+
         //カート内の商品を消す。
         Cart::where('user_id', Auth::id())->delete();
 
