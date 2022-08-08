@@ -43,6 +43,7 @@ class ItemController extends Controller
         $products = Product::availableItems()
         //選んだカテゴリーのみを取ってくる処理
         ->selectCategory($request->category ?? '0')
+        ->searchKeyword($request->keyword)
         //選んだ表示順を取ってくる処理
         ->sortOrder($request->sort)
         //選択した表示数だけ表示する処理（ページネーション）

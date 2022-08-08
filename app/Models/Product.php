@@ -118,4 +118,29 @@ class Product extends Model
             return;
         }
     }
+
+    //検索で打ち込んだ単語に関する情報を取得する処理
+    public function scopeSearchKeyword($query, $keyword)
+    {
+        if(!is_null($keyword))
+        {
+            //全角スペースを半角に
+            $spaceConvert = mb_convert_kana($keyword, 's');
+
+            //空白で区切る
+            $keywords = preg_split('/[\s]/', $spaceConvert, -1, PREG_SPLIT_NO_EMPTY);
+
+            //単語をループで回す
+            foreach($keywords as $word)
+            {   
+                //曖昧検索で打ち込んだ単語に関するものを取得してくる。
+                $query->where('products.name','like','%'.$word.'%');
+            }
+
+            return $query;
+
+        } else {
+            return;
+        }
+    }
 }
