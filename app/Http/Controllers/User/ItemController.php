@@ -5,11 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB; //クエリビルダ
 use Illuminate\Support\Facades\Mail;
+use App\Mail\TestMail;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\PrimaryCategory;
 use App\Models\Stock;
-use App\Mail\TestMail;
+use App\jobs\SendThankMail;
 
 class ItemController extends Controller
 {
@@ -36,18 +37,17 @@ class ItemController extends Controller
 
     public function index(Request $request) {
 
-        Mail::to('test@example.com') //受信者の指定(送信先)
-        ->send(new TestMail()); //Mailableクラス
+        SendThankMail::dispatch();
 
         //N+1問題の解消 : with('')
         $categories = PrimaryCategory::with('secondary')
         ->get();
-        
 
         //全ての商品を取得する処理（ローカルスコープでまとめている）
         $products = Product::availableItems()
         //選んだカテゴリーのみを取ってくる処理
         ->selectCategory($request->category ?? '0')
+        //検索内容に合わせた商品のidだけを取ってくる処理
         ->searchKeyword($request->keyword)
         //選んだ表示順を取ってくる処理
         ->sortOrder($request->sort)
